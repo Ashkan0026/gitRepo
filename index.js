@@ -4,14 +4,7 @@ let calculatorStr = ''
 for(let i = 0; i<buttons.length ; i++){
    buttons[i].addEventListener('click',() => {
     if(buttons[i].textContent.includes("=")){
-        if(counter(calculatorStr) <= 1){
-            oneOp()
-        }else if(counter(calculatorStr) == 2){
-            let result = calculateResult(calculatorStr)
-            calculatorStr = ''
-            calculatorStr += result
-            screen.textContent = calculatorStr
-        }
+        oneOp()
     }else if(buttons[i].textContent.includes("AC")){
         calculatorStr = ''
         screen.textContent = calculatorStr
@@ -25,102 +18,39 @@ for(let i = 0; i<buttons.length ; i++){
    })
 }
 
-function counter(str){
-    let howmany = 0;
-    for(let i = 0; i<str.length ; i++){
-        if(str.charAt(i) == '+' || str.charAt(i) == '-' || str.charAt(i) == '*' || str.charAt(i) == '/'){
-            howmany++
-        }
-    }
-    return howmany
-}
 
 function oneOp(){
-    let result
-    if(calculatorStr.includes("+")){
-        result = calculator(parseFloat(calculatorStr.split("\+")[0]),parseFloat(calculatorStr.split("\+")[1]),'+')                    
-    }else if(calculatorStr.includes("-")){
-            result = calculator(parseFloat(calculatorStr.split("-")[0]),parseFloat(calculatorStr.split("-")[1]),'-')
-    }else if(calculatorStr.includes("*")){
-        result = calculator(parseFloat(calculatorStr.split("\*")[0]),parseFloat(calculatorStr.split("\*")[1]),'*')
-    }else if(calculatorStr.includes("\/")){
-        result = calculator(parseFloat(calculatorStr.split("\/")[0]),parseFloat(calculatorStr.split("\/")[1]),'/')
-    }else if(calculatorStr.includes("sin")){
-        result = Math.sin(parseFloat(calculatorStr.substr(calculatorStr.indexOf('n')+1,calculatorStr.length)))
-    }else if(calculatorStr.includes('^')){
-        result = calculator(parseFloat(calculatorStr.split("\^")[0]), parseFloat(calculatorStr.split("\^")[1]), '^')
-    }
+    let result = recursiveStr(calculatorStr)
     calculatorStr = ''
     calculatorStr += result
     screen.textContent = calculatorStr
 }
 
-function calculateResult(str){
-    if(str.includes("*")){
-        if(str.includes("+")){
-            if(str.indexOf('*') > str.indexOf('+')){
-                let secondStr = str.substr(str.indexOf('+')+1,str.length)
-                let firstNum = parseFloat(str.substr(0,str.indexOf('+')))
-                let secondNum = calculator(parseFloat(secondStr.split("\*")[0]),parseFloat(secondStr.split("\*")[1]),'*')
-                console.log(secondNum)
-                return (firstNum+secondNum)
-            }else if(str.indexOf('*') < str.indexOf('+')){
-                let newStr = str.substr(0,str.indexOf('+'))
-                let firstNum = parseFloat(str.substr(str.indexOf('+')+1,str.length))
-                let secondNum = calculator(parseFloat(newStr.split("\*")[0]),parseFloat(newStr.split("\*")[1]),'*')
-                console.log(newStr)
-                return (secondNum+firstNum)
-            }
-            return 0
-        }else if(str.includes("-")){
-            if(str.indexOf('*') > str.indexOf('-')){
-                let secondStr = str.substr(str.indexOf('-')+1,str.length)
-                let firstNum = parseFloat(str.substr(0,str.indexOf('-')))
-                let secondNum = calculator(parseFloat(secondStr.split("\*")[0]),parseFloat(secondStr.split("\*")[1]),'*')
-                return (firstNum-secondNum)
-            }else if(str.indexOf('*') < str.indexOf('-')){
-                let newStr = str.substr(0,str.indexOf('-'))
-                let firstNum = parseFloat(str.substr(str.indexOf('-')+1,str.length))
-                let secondNum = calculator(parseFloat(newStr.split("\*")[0]),parseFloat(newStr.split("\*")[1]),'*')
-                return (secondNum-firstNum)
-            }
-            return 0
-        }
-        return 0
-    }else if(str.includes("/")){
-        if(str.includes("+")){
-            if(str.indexOf('/') > str.indexOf('+')){
-                let secondStr = str.substr(str.indexOf('+')+1,str.length)
-                let firstNum = parseFloat(str.substr(0,str.indexOf('+')))
-                let secondNum = calculator(parseFloat(secondStr.split("\/")[0]),parseFloat(secondStr.split("\/")[1]),'/')
-                return (firstNum+secondNum)
-            }else if(str.indexOf('/') < str.indexOf('+')){
-                let newStr = str.substr(0,str.indexOf('+'))
-                let firstNum = parseFloat(str.substr(str.indexOf('+')+1,str.length))
-                let secondNum = calculator(parseFloat(newStr.split("\/")[0]),parseFloat(newStr.split("\/")[1]),'/')
-                
-                return (secondNum+firstNum)
-            }
-            return 0
-        }else if(str.includes("-")){
-            if(str.indexOf('/') > str.indexOf('-')){
-                let secondStr = str.substr(str.indexOf('-')+1,str.length)
-                let firstNum = parseFloat(str.substr(0,str.indexOf('-')))
-                let secondNum = calculator(parseFloat(secondStr.split("\/")[0]),parseFloat(secondStr.split("\/")[1]),'/')
-                
-                return (firstNum-secondNum)
-            }else if(str.indexOf('/') < str.indexOf('-')){
-                let newStr = str.substr(0,str.indexOf('-'))
-                let firstNum = parseFloat(str.substr(str.indexOf('-')+1,str.length))
-                let secondNum = calculator(parseFloat(newStr.split("\/")[0]),parseFloat(newStr.split("\/")[1]),'/')
-                
-                return (secondNum-firstNum)
-            }
-            return 0
-        }
-        return 0
+
+function convertData(str1, op){
+    let result = 0
+    if(op == '+'){
+        let num1 = parseFloat(str1.split("\+")[0])
+        let num2 = parseFloat(str1.split("\+")[1])
+        result = calculator(num1, num2, '+')
+    }else if(op == '-'){
+        let num1 = parseFloat(str1.split("-")[0])
+        let num2 = parseFloat(str1.split("-")[1])
+        result = calculator(num1, num2, '-')
+    }else if(op == '*'){
+        let num1 = parseFloat(str1.split("\*")[0])
+        let num2 = parseFloat(str1.split("\*")[1])
+        result = calculator(num1, num2, '*')
+    }else if(op == '/'){
+        let num1 = parseFloat(str1.split("\/")[0])
+        let num2 = parseFloat(str1.split("\/")[1])
+        result = calculator(num1, num2, '/')
+    }else if(op == '^'){
+        let num1 = parseFloat(str1.split("\^")[0])
+        let num2 = parseFloat(str1.split("\^")[1])
+        result = calculator(num1, num2, '^')
     }
-    return 0
+    return result
 }
 
 function calculator(num1, num2, op){
@@ -139,3 +69,48 @@ function calculator(num1, num2, op){
             return 0            
     }
 }
+/**
+ * 
+ * @param {String} str 
+ */
+
+function recursiveStr(str){
+    if(str.search(/([\d]+[\^][\d]+)+/) != -1){
+        let clone = str.match(/([\d]+[\^][\d]+)+/)[0]
+        let result = convertData(clone,'^')
+        console.log(result)
+        str = str.replace(/([\d]+[\^][\d]+)+/, result)
+        console.log(str)
+        return recursiveStr(str)
+    }else if(str.search(/([\d]+[\*][\d]+)+/) != -1){
+        let clone = str.match(/([\d]+[\*][\d]+)+/)[0]
+        let result = convertData(clone,'*')
+        console.log(result)
+        str = str.replace(/([\d]+[\*][\d]+)+/, result)
+        console.log(str)
+        return recursiveStr(str)
+    }else if(str.search(/([\d]+[\/][\d]+)+/) != -1){
+        let clone = str.match(/([\d]+[\/][\d]+)+/)[0]
+        console.log(clone)
+        let result = convertData(clone,'/')
+        str = str.replace(/([\d]+[\/][\d]+)+/, result)
+        console.log(str)
+        return recursiveStr(str)
+    }else{
+        if(str.indexOf('+') == -1 && str.indexOf('-') == -1) return parseFloat(str)
+        let clone = str.match(/([\d]+[\+-][\d]+)+/)[0]
+        let result = 0
+        if(clone.indexOf('+') != -1){
+            result = convertData(clone, '+')
+            str = str.replace(/([\d]+[\+][\d]+)+/, result)
+        }else if(clone.indexOf('-') != -1){
+            result = convertData(clone, '-')
+            str = str.replace(/([\d]+[-][\d]+)+/, result)
+            console.log(str)
+        }
+        if(str.indexOf('+') == -1 && str.indexOf('-') == -1) return result
+        else return recursiveStr(str)
+    }
+    
+}
+console.log(recursiveStr("5+4*133/3"))
